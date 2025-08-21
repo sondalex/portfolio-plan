@@ -1,0 +1,44 @@
+[project]
+name = "portfolio-plan"
+version = "0.1.0"
+description = "A Python package for creating, analyzing and visualizing investment strategies. Portfolio-plan allows users to define portfolios with custom asset allocations, simulate investment plans over time periods, calculate returns, and compare historical performance against benchmarks"
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+authors = [{ "name" = "Alexandre Sonderegger" }]
+dependencies = [
+  "empyrical-reloaded>=0.5.10",
+  "numpy>=1.26,<1.27",
+  "pandas<2.0.0",
+  "plotnine>=0.12.4",
+  "pyarrow<20.0.0",
+  "yfinance",
+]
+
+[dependency-groups]
+dev = [
+  "ipykernel>=6.29.5",
+  "jupytext>=1.17.1",
+  "mypy",
+  "myst-nb>=1.2.0",
+  "myst-parser>=4.0.1",
+  "pandas-stubs",
+  "pyarrow-stubs>=19.4",
+  "pydata-sphinx-theme>=0.16.1",
+  "pytest>=8.3.5",
+  "ruff>=0.11.7",
+  "sphinx-design>=0.6.1",
+  "sphinx>=8.1.3",
+]
+
+[[tool.mypy.overrides]]
+module = ["yfinance", "empyrical"]
+ignore_missing_imports = true
+
+[tool.ruff]
+exclude = [".venv", "venv", "build"]
+
+[tool.setuptools.package-data]
+portfolio_plan = ["data/*.parquet"]
+
+[tool.setuptools]
+packages = ["portfolio_plan", "portfolio_plan.data"]

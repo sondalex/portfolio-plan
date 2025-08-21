@@ -1,0 +1,62 @@
+name: Deploy Documentation and package
+
+on:
+  workflow_run:
+    workflows: ["Run checks"]
+    branches: [main]
+    types: [completed]
+
+jobs:
+  deploydocs:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      id-token: write
+      pages: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Download documentation artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: github-pages
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          path: './'
+      - name: Extract content
+        run: mkdir _site && tar -xvf ./artifact.tar -C _site/
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site/'
+          name: github-pages
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
+  deploypackage:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: deploy-package
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install uv
+      run: python -m pip install uv
+    - name: Build package
+      run: uv build
+    - name: Publish package to registry
+      env:
+        INDEX_URL: ${{ vars.INDEX_URL || 'https://upload.pypi.org/legacy/' }}
+      run: uv publish "dist/*" --trusted-publishing=always --publish-url $INDEX_URL

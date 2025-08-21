@@ -1,0 +1,9 @@
+include = [
+  "pyproject.toml",
+  "portfolio_plan/**/*.py",
+  "tests/**/*.py",
+]
+line-length = 88
+
+[lint]
+ignore = []
