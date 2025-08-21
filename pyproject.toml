@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A Python package for creating, analyzing and visualizing investment strategies. Portfolio-plan allows users to define portfolios with custom asset allocations, simulate investment plans over time periods, calculate returns, and compare historical performance against benchmarks"
 readme = "README.md"
 requires-python = ">=3.10,<3.11"
+license = "MIT"
 authors = [{ "name" = "Alexandre Sonderegger" }]
 dependencies = [
   "empyrical-reloaded>=0.5.10",
